@@ -50,4 +50,19 @@ describe('game class testing',function() {
       expect(game.getGameBoard(0,1)).to.equal(5)
     })
   })
+
+  context("Testing game win function", function(){
+    it('Checking if the game is still on', function() {
+      expect(game.checkWin()).to.equal(false)
+    })
+    it('Checking if the game has ended', function() {
+      var a = [
+        [0,0,0],
+        [5,5,5],
+        [0,0,0]
+      ];
+      game.setGameBoard(a);
+      expect(game.checkWin()).to.equal(true)
+    })
+  })
 })

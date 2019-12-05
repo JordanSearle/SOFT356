@@ -1,7 +1,8 @@
 const classes = require('../classes/class');
 var expect    = require("chai").expect;
 
-var acc = new classes.acc(1,"a_username","a_password");
+var acc = new classes.account();
+var game = new classes.game();
 
 describe('account class',function() {
   context("Testing getter/setters for Password", function(){
@@ -22,6 +23,31 @@ describe('account class',function() {
     it('should have a ID of 123abc456', function() {
       acc.setID("123abc456");
       expect(acc.getID()).to.equal("123abc456")
+    })
+  })
+})
+describe('game class testing',function() {
+  context("Testing board Array to equal 0", function(){
+    it('position 0,0 equals 0', function() {
+      expect(game.getGameBoard(1,1)).to.equal(0)
+    })
+  })
+  context("Testing board Array setting", function(){
+    it('position 1,1 equals 5', function() {
+      var a = [
+        [0,0,0],
+        [0,5,0],
+        [0,0,0]
+      ];
+      game.setGameBoard(a);
+      expect(game.getGameBoard(1,1)).to.equal(5)
+    })
+  })
+
+  context("Testing board addMove function", function(){
+    it('position 0,1 should now equal 5', function() {
+      game.addMove([0,1],5)
+      expect(game.getGameBoard(0,1)).to.equal(5)
     })
   })
 })

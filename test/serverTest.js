@@ -1,5 +1,7 @@
 var request = require('supertest');
+var mongoose = require("mongoose");
 describe('loading express', function () {
+  this.timeout(10000);
   var server;
   //Start server before each test
   beforeEach(function () {
@@ -8,6 +10,7 @@ describe('loading express', function () {
   //Close server after each test
   afterEach(function () {
     server.close();
+    mongoose.disconnect();
   });
   it('responds to url/', function(done) {
   request(server)
@@ -18,5 +21,10 @@ describe('loading express', function () {
     request(server)
       .get('/fakeURL')
       .expect(404, done);
+  });
+  it('Test Writing', function(done) {
+    request(server)
+      .get('/writetoDB')
+      .expect(200, done);
   });
 });

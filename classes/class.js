@@ -1,3 +1,4 @@
+var mongoose = require("mongoose");
 module.exports.account = class Account{
     #userID;
     #username;
@@ -31,6 +32,7 @@ constructor(){
     [0,0,0]
   ];
 }
+  #gameID;
   #userOne;
   #userTwo;
   #gameBoard;

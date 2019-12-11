@@ -3,9 +3,11 @@ var mongoose = require("mongoose");
 describe('loading express', function () {
   this.timeout(10000);
   var server;
+  var uri = 'mongodb://localhost/soft355';
   //Start server before each test
   beforeEach(function () {
     server = require('../server');
+      mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true});
   });
   //Close server after each test
   afterEach(function () {

@@ -29,4 +29,11 @@ describe('loading express', function () {
       .get('/writetoDB')
       .expect(200, done);
   });
+  it('test login',function(done) {
+    request(server)
+    .post('/login')
+    .send({Email:'test',Password:'password'})
+    .expect(200, done);
+
+    })
 });

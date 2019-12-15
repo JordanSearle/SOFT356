@@ -4,7 +4,7 @@ var schemas = require("./schemas");
 var app = express();
 var bodyParser = require('body-parser');
 
-uri = 'mongodb://localhost/soft355';
+uri = 'mongodb://localhost:27017/soft355';
 
 app.use(express.static("client"));
 app.use(bodyParser.json());
@@ -28,9 +28,21 @@ app.get('/writetodb',function(req,res) {
 });
 app.post('/login',function(req,res) {
   console.log("recieved a Post request");
+  var user = schemas.User;
   var email = req.body.Email;
   var password = req.body.Password;
-  res.status(200).send('ok');
+
+  user.findOne({username: email}, function(err,obj) {
+    if(err) {console.log(err);res.status(404);};
+    if(obj===null){res.status(404).send("ok");}
+    else{
+      //Needs to  be chaged for session values... but can be done later.
+    console.log(obj);
+    res.status(200).send(obj);
+  }
+  });
+
+
 });
 
 

@@ -34,15 +34,23 @@ app.post('/login',function(req,res) {
   var user = schemas.User;
   var email = req.body.email;
   var password = req.body.password;
-  console.log(email +' ' + password);
 
   user.findOne({username: email}, function(err,obj) {
-    if(err) {console.log(err);res.status(404).send("Failed To connect to Database");};
-    if(obj===null){res.status(200).send("Failed to FInd values");}
+    if(err) {console.log(err);res.status(404).send(err);};
+    if(obj===null){res.status(200).send({error:"Username"});}
+    //If it find the item in the DB
     else{
-      //Needs to  be chaged for session values... but can be done later.
-    console.log(obj);
-    res.status(200).send(obj);
+      //if the username matches the password
+      if (obj.password == req.body.password) {
+        res.status(200).send(String(obj.userID));
+        //Login Stuff and session processes here.
+      }
+      //If the password is incorrect
+      else {
+        res.status(200).send({error:"Password"});
+      }
+
+
   }
   });
 });

@@ -1,5 +1,7 @@
 var request = require('supertest');
 var mongoose = require("mongoose");
+var assert = require('assert');
+
 describe('loading express', function () {
   this.timeout(10000);
   var server;
@@ -24,21 +26,42 @@ describe('loading express', function () {
       .get('/fakeURL')
       .expect(404, done);
   });
-  it('Test Writing', function(done) {
-    request(server)
-      .get('/writetoDB')
-      .expect(200, done);
-  });
   it('Testing Post login',function(done) {
     request(server)
-    .post('/login')
-    .send({Email:'test',Password:'password'})
+    .post('/Ulogin')
+    .send({Email:'test',Password:'test'})
     .expect(200, done);
   });
-  it('Testing no record exist',function(done) {
+  it('Testing incorrect Password',function(done) {
     request(server)
-    .post('/login')
-    .send({Email:'FakeUser',Password:'password'})
-    .expect(404, done);
+    .post('/Ulogin')
+    .send({Email:'test',Password:'password'})
+    .set('Accept', 'application/json')
+    .expect('Content-Type', /json/)
+    .expect(200, {
+        error: 'Password'
+      }, done);
   });
+  it('testing logging out', function(done) {
+    request(server)
+    .get('/logout')
+    .expect(302,done);
+  });
+  it('Testing Account Creation',function(done) {
+    request(server)
+    .post('/signup')
+    .send({Email:'testnew',Password:'test'})
+    .expect(200, {
+        success: 'Account made successfully'
+      }, done);
+  });
+  it('Testing Account Deletion',function(done) {
+    request(server)
+    .post('/delAccount')
+    .send({Email:'testnew',Password:'test'})
+    .expect(200, {
+        success: 'Account Deleted'
+      }, done);
+  });
+
 });

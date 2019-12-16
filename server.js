@@ -4,13 +4,16 @@ var schemas = require("./schemas");
 var app = express();
 var bodyParser = require('body-parser');
 
-
 uri = 'mongodb://localhost:27017/soft355';
 
 app.use(express.static("client"));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}) );
+//Session Details
+
+
+
 
 app.get("/", function(request, response) {
   response.status(200).sendFile("/", {root: "client"});

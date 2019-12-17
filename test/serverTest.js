@@ -45,7 +45,7 @@ describe('loading express', function () {
   it('testing logging out', function(done) {
     request(server)
     .get('/logout')
-    .expect(302,done);
+    .expect(200,done);
   });
   it('Testing Account Creation',function(done) {
     request(server)

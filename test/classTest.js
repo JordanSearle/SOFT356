@@ -46,23 +46,55 @@ describe('game class testing',function() {
 
   context("Testing board addMove function", function(){
     it('position 0,1 should now equal 5', function() {
-      game.addMove([0,1],5)
+      game.addMove([0,1],5,'User1');
       expect(game.getGameBoard(0,1)).to.equal(5)
     })
   })
 
-  context("Testing game win function", function(){
-    it('Checking if the game is still on', function() {
-      expect(game.checkWin()).to.equal(false)
-    })
-    it('Checking if the game has ended', function() {
-      var a = [
-        [0,0,0],
-        [5,5,5],
-        [0,0,0]
-      ];
-      game.setGameBoard(a);
-      expect(game.checkWin()).to.equal(true)
+  context("Testing if board value is 0", function(){
+    it('position 0,1 should return false', function() {
+      expect(game.isValue([0,2])).to.equal(false);
     })
   })
+
+})
+describe('Testing a full Game',function() {
+  it('Testing if User 1 will win',function() {
+    game.setUserOne('user1');
+    game.setUserTwo('user2');
+    game.addMove([0,0],5,'User1');
+    game.addMove([0,1],5,'User1');
+    game.addMove([0,2],5,'User1');
+
+    expect(game.checkWin().winner).to.equal('user1');
+  });
+  it('Testing if User 2 will win',function() {
+    game.setUserOne('user1');
+    game.setUserTwo('user2');
+    game.addMove([0,0],3,'User2');
+    game.addMove([0,1],3,'User2');
+    game.addMove([0,2],3,'User2');
+
+    expect(game.checkWin().winner).to.equal('user2');
+  });
+  it('Testing if game has not ended',function() {
+    game = new classes.game();
+    var a = [
+      [5,3,3],
+      [3,5,5],
+      [3,5,0]
+    ];
+    game.setGameBoard(a);
+    expect(game.checkWin().game).to.equal('continue');
+  });
+  it('Testing if draw',function() {
+    game = new classes.game();
+    var a = [
+      [5,3,3],
+      [3,5,5],
+      [3,5,3]
+    ];
+    game.setGameBoard(a);
+    expect(game.checkWin().Gdraw).to.equal(true);
+  });
 })

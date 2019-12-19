@@ -63,5 +63,10 @@ describe('loading express', function () {
         success: 'Account Deleted'
       }, done);
   });
+  it('Testing Game Creation',function(done) {
+    request(server)
+    .get('/dashboard/newGame/1232ssdf/test')
+    .expect(302,done);
+  });
 
 });

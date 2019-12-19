@@ -1,4 +1,6 @@
 var mongoose = require("mongoose");
+var schemas = require("../schemas");
+var myId = mongoose.Types.ObjectId();
 module.exports.account = class Account{
     #userID;
     #username;
@@ -142,5 +144,13 @@ constructor(){
     else{
       return {game:'continue'};
     }
+  }
+  //save game to Db and return
+  async saveNewGame(){
+    console.log(myId);
+    //var Game = mongoose.model("Game",{  gameID: Number, userOne: String, userTwo: String, gameBoard: [[]], moves: [{}],draw:Boolean});
+    var game = new schemas.Game({ _id: myId, userOne: this.#userOne,userTwo: this.#userTwo, gameboard:this.#gameBoard, moves:this.#moves, draw:this.#draw});
+    await game.save();
+    return game;
   }
 }

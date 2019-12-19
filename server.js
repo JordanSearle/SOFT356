@@ -1,6 +1,7 @@
     var express = require('express');
     var mongoose = require("mongoose");
     var schemas = require("./schemas");
+    var classes = require('./classes/class');
     var app = express();
     var bodyParser = require('body-parser');
     var cookieParser = require('cookie-parser');
@@ -42,9 +43,6 @@
         next();
       }
     };
-
-
-
 
     app.use(express.static("client"));
 
@@ -124,6 +122,23 @@
         res.sendFile(__dirname + '/client/index.html');
       }
     });
+      //Creating a new game...
+    app.get('/dashboard/newGame/:user1/:user2', function(req,res) {
+      var newGame = new classes.game();
+      newGame.setUserOne(req.params.user1);
+      newGame.setUserTwo(req.params.user2);
+
+
+      newGame.saveNewGame().then(function(game) {
+        res.status(200).redirect('/game/'+game._id);
+      });
+      //Needs do declaire a new game
+      //Then do what ever next
+    });
+    //Game functions now...
+    app.get('/game/:ID',function() {
+      //Do stuff
+    })
 
     //Just test code can be removed.
     app.post('/signup', function(req, res) {

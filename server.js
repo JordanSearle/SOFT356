@@ -6,6 +6,16 @@
     var bodyParser = require('body-parser');
     var cookieParser = require('cookie-parser');
     var session = require('express-session');
+    var http = require("http");
+    var WebSocketServer = require("websocket").server;
+
+
+    httpserver = http.createServer(app);
+
+    // Initialise the websocket instance.
+    var wss = new WebSocketServer({httpServer: httpserver});
+    var connection;
+
 
     uri = 'mongodb://localhost:27017/soft355';
 
@@ -35,14 +45,7 @@
       next();
     });
 
-    // middleware function to check for logged-in users
-    var sessionChecker = (req, res, next) => {
-      if (req.session.user && req.cookies.user_sid) {
-        res.redirect('/dashboard');
-      } else {
-        next();
-      }
-    };
+
 
     app.use(express.static("client"));
 
@@ -91,6 +94,7 @@
     });
     //Acc Deletion
     app.post('/delAccount', function(req, res) {
+      isLogged();
       var user = schemas.User;
       var email = req.body.Email;
       var password = req.body.Password;
@@ -116,14 +120,12 @@
 
     // route for user's dashboard
     app.get('/dashboard', function(req, res) {
-      if (req.session.user && req.cookies.user_sid) {
-        res.sendFile(__dirname + '/client/dashboard.html');
-      } else {
-        res.sendFile(__dirname + '/client/index.html');
-      }
+      isLogged();
+      res.sendFile(__dirname + '/client/dashboard.html');
     });
       //Creating a new game...
     app.get('/dashboard/newGame/:user1/:user2', function(req,res) {
+      isLogged();
       var newGame = new classes.game();
       newGame.setUserOne(req.params.user1);
       newGame.setUserTwo(req.params.user2);
@@ -136,8 +138,14 @@
       //Then do what ever next
     });
     //Game functions now...
-    app.get('/game/:ID',function() {
+    app.get('/game/:ID',function(req,res) {
       //Do stuff
+      isLogged();
+      //webSocket: need to listen for both users sending a move (Update DB)
+      //Need to update the client side as each move is sent
+      //Check for win/draw/loss on each move
+
+      res.status(200).send(req.params.ID);
     })
 
     //Just test code can be removed.
@@ -177,3 +185,13 @@
     });
 
     module.exports = server;
+
+
+//Temp functions
+function isLogged() {
+  if (req.session.user && req.cookies.user_sid) {
+    //Do nothing?
+  } else {
+    res.sendFile(__dirname + '/client/index.html');
+  }
+}

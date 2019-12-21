@@ -6,15 +6,9 @@
     var bodyParser = require('body-parser');
     var cookieParser = require('cookie-parser');
     var session = require('express-session');
-    var http = require("http");
-    var WebSocketServer = require("websocket").server;
+    var expressWs = require('express-ws')(app);
 
 
-    httpserver = http.createServer(app);
-
-    // Initialise the websocket instance.
-    var wss = new WebSocketServer({httpServer: httpserver});
-    var connection;
 
 
     uri = 'mongodb://localhost:27017/soft355';
@@ -80,7 +74,7 @@
           if (obj.password == req.body.Password) {
             //res.status(200).send(String(obj.userID));
             //Login Stuff and session processes here.
-            req.session.user = obj.userID;
+            req.session.user = obj._id;
             res.status(200).send(String(obj.userID));
           }
           //If the password is incorrect
@@ -94,61 +88,128 @@
     });
     //Acc Deletion
     app.post('/delAccount', function(req, res) {
-      isLogged();
-      var user = schemas.User;
-      var email = req.body.Email;
-      var password = req.body.Password;
+      if (req.session.user && req.cookies.user_sid) {
+        var user = schemas.User;
+        var email = req.body.Email;
+        var password = req.body.Password;
 
-      user.deleteOne({
-        username: email,
-        password: password
-      }, function(err) {
-        if (err) {
-          res.status(200).send({
-            error: err
-          });
-        } else {
-          res.status(200).send({
-            success: 'Account Deleted'
-          });
-        }
-      });
+        user.deleteOne({
+          username: email,
+          password: password
+        }, function(err) {
+          if (err) {
+            res.status(200).send({
+              error: err
+            });
+          } else {
+            res.status(200).send({
+              success: 'Account Deleted'
+            });
+          }
+        });
+      } else {
+
+        res.sendFile(__dirname + '/client/index.html');
+      }
     });
     app.get('/logout', function(req, res) {
-      res.clearCookie('user_sid').sendFile(__dirname + '/client/index.html');
+      if (req.session.user && req.cookies.user_sid) {
+        //Do nothing?
+        res.clearCookie('user_sid').sendFile(__dirname + '/client/index.html');
+      } else {
+
+        res.sendFile(__dirname + '/client/index.html');
+      }
     });
 
     // route for user's dashboard
     app.get('/dashboard', function(req, res) {
-      isLogged();
-      res.sendFile(__dirname + '/client/dashboard.html');
+      if (req.session.user && req.cookies.user_sid) {
+        //Do nothing?
+        res.sendFile(__dirname + '/client/dashboard.html');
+      } else {
+
+        res.sendFile(__dirname + '/client/index.html');
+      }
+
     });
       //Creating a new game...
     app.get('/dashboard/newGame/:user1/:user2', function(req,res) {
-      isLogged();
-      var newGame = new classes.game();
-      newGame.setUserOne(req.params.user1);
-      newGame.setUserTwo(req.params.user2);
+
+      if (req.session.user && req.cookies.user_sid) {
+        var newGame = new classes.game();
+        newGame.setUserOne(req.params.user1);
+        newGame.setUserTwo(req.params.user2);
 
 
-      newGame.saveNewGame().then(function(game) {
-        res.status(200).redirect('/game/'+game._id);
-      });
-      //Needs do declaire a new game
-      //Then do what ever next
+        newGame.saveNewGame().then(function(game) {
+          res.sendFile(__dirname + '/client/game.html');
+        });
+        //Needs do declaire a new game
+        //Then do what ever next
+      } else {
+
+        res.sendFile(__dirname + '/client/index.html');
+      }
+
     });
-    //Game functions now...
-    app.get('/game/:ID',function(req,res) {
-      //Do stuff
-      isLogged();
-      //webSocket: need to listen for both users sending a move (Update DB)
-      //Need to update the client side as each move is sent
-      //Check for win/draw/loss on each move
 
-      res.status(200).send(req.params.ID);
+    app.get('/dashboard/temp',function(req,res) {
+
+      var game = schemas.Game;
+
+      game.find({$or:[{userOne: req.session.user},{userTwo:req.session.user}]}, function(err, games) {
+        if(err) console.log(err);
+        var gameMap = [];
+
+        games.forEach(function(lgame) {
+          gameMap.push({'game':lgame});
+        });
+
+      res.send(gameMap);
+    });
+
+    })
+    //Game functions now...
+    app.ws('/game/move', function(ws, req) {
+      ws.on('message', function(msg) {
+        //Get Input (GameID,user, Move)
+        var input = JSON.parse(msg)
+        //Update DB
+          var game = new classes.game();
+          game.setID(input.id);
+          game.getGame();
+          //game.addMove(input.pos,input.value,input.user);
+        //Return update
+         ws.send(5);
+      });
+    });
+
+    app.ws('/game/update', function(ws, req) {
+      ws.on('message', function(msg) {
+        //Get Input (GameID,user, Move)
+        var input = JSON.parse(msg)
+        //Update DB
+          var game = new classes.game();
+          game.setID(input.id);
+          game.getGame();
+          /**game.setID(test._id);
+          game.setUserOne(test.userOne);
+          game.setUserTwo(test.userTwo);
+          game.setGameBoard(test.gameBoard);
+          game.setMoves(test.moves);
+          game.setDraw(test.draw);**/
+        //Return update
+        var output = {board:game.getUserOne()};
+         ws.send(JSON.stringify(output));
+      });
+    });
+
+    app.get('game/setup/:gameID',function(req,res) {
+      var gameID = req.params.gameID;
+      //init game and return
     })
 
-    //Just test code can be removed.
     app.post('/signup', function(req, res) {
       var user = schemas.User;
       var newUser = new user({
@@ -171,6 +232,7 @@
     });
 
 
+
     //Server Start...
     var server = app.listen(9000, function() {
       // Connect to Mongoose.
@@ -185,13 +247,3 @@
     });
 
     module.exports = server;
-
-
-//Temp functions
-function isLogged() {
-  if (req.session.user && req.cookies.user_sid) {
-    //Do nothing?
-  } else {
-    res.sendFile(__dirname + '/client/index.html');
-  }
-}

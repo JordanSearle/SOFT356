@@ -6,3 +6,7 @@ angular.module("dash", [
 "ngRoute",
 "dash"
 ]);
+angular.module("game", [
+"ngRoute",
+"game"
+]);

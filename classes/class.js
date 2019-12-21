@@ -42,11 +42,17 @@ constructor(){
   #moves = [];
   #draw;
 //getters/setters etc...
+  setID(id){
+    this.#gameID = id;
+  }
   getGameBoard(a,b){
     return this.#gameBoard[a][b];
   }
   setGameBoard(gameBoard){
     this.#gameBoard = gameBoard;
+  }
+  rtngameBoard(){
+    return this.#gameBoard;
   }
   setUserOne(user){
     this.#userOne = user;
@@ -60,9 +66,12 @@ constructor(){
   getUserTwo(){
     return this.#userTwo;
   }
-
-
-
+  setMoves(moves){
+    this.#moves = moves;
+  }
+  setDraw(draw){
+    this.#draw = draw
+  }
   addMove(arr,move,user){
     this.#gameBoard[arr[0]][arr[1]] = move;
     //Add move to moves array
@@ -147,10 +156,21 @@ constructor(){
   }
   //save game to Db and return
   async saveNewGame(){
-    console.log(myId);
     //var Game = mongoose.model("Game",{  gameID: Number, userOne: String, userTwo: String, gameBoard: [[]], moves: [{}],draw:Boolean});
     var game = new schemas.Game({ _id: myId, userOne: this.#userOne,userTwo: this.#userTwo, gameboard:this.#gameBoard, moves:this.#moves, draw:this.#draw});
     await game.save();
     return game;
+  }
+  getGame(){
+    //var Game = mongoose.model("Game",{  gameID: Number, userOne: String, userTwo: String, gameBoard: [[]], moves: [{}],draw:Boolean});
+    var out = {};
+    var dbGame = schemas.Game;
+     dbGame.findOne({_id:this.#gameID},function(err,obj) {
+      if(err)console.error(err);
+      out = obj;
+      console.log(obj);
+      console.log(out);
+    })
+    console.log(out);
   }
 }

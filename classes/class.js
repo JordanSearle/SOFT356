@@ -45,6 +45,9 @@ constructor(){
   setID(id){
     this.#gameID = id;
   }
+  getID(){
+    return this.#gameID;
+  }
   getGameBoard(a,b){
     return this.#gameBoard[a][b];
   }
@@ -69,8 +72,14 @@ constructor(){
   setMoves(moves){
     this.#moves = moves;
   }
+  getMoves(){
+    return this.#moves;
+  }
   setDraw(draw){
     this.#draw = draw
+  }
+  getDraw(){
+    return this.#draw;
   }
   addMove(arr,move,user){
     this.#gameBoard[arr[0]][arr[1]] = move;
@@ -158,7 +167,9 @@ constructor(){
   async saveNewGame(){
     //var Game = mongoose.model("Game",{  gameID: Number, userOne: String, userTwo: String, gameBoard: [[]], moves: [{}],draw:Boolean});
     var game = new schemas.Game({ _id: myId, userOne: this.#userOne,userTwo: this.#userTwo, gameboard:this.#gameBoard, moves:this.#moves, draw:this.#draw});
-    await game.save();
+    await game.save((err, userDoc) => {
+        if (err) console.log(err);
+    });
     return game;
   }
   getGame(){

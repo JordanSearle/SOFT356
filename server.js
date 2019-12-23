@@ -136,7 +136,7 @@
       //Creating a new game...
     app.get('/dashboard/newGame/:user1/:user2', function(req,res) {
 
-      if (req.session.user && req.cookies.user_sid) {
+      if (true) {
         var newGame = new classes.game();
         newGame.setUserOne(req.params.user1);
         newGame.setUserTwo(req.params.user2);
@@ -174,14 +174,34 @@
     app.ws('/game/move', function(ws, req) {
       ws.on('message', function(msg) {
         //Get Input (GameID,user, Move)
-        var input = JSON.parse(msg)
-        //Update DB
+        var input = JSON.parse(msg);
+
           var game = new classes.game();
           game.setID(input.id);
-          game.getGame();
+
+          var dbGame = schemas.Game;
+           dbGame.findOne({_id:game.getID()},function(err,obj) {
+            if(err)console.error(err);
+            game.setID(obj._id);
+            game.setUserOne(obj.userOne);
+            game.setUserTwo(obj.userTwo);
+            game.setMoves(obj.moves);
+            game.setGameBoard(obj.gameBoard);
+            game.setDraw(obj.draw);
+            game.addMove(input.pos,input.value,input.user);
+            var check = game.checkWin();
+            obj.moves = game.getMoves();
+            obj.gameBoard = game.rtngameBoard();
+            obj.draw = game.getDraw();
+            obj.markModified('gameBoard');
+            obj.markModified('moves');
+            obj.save();
+            var output = {board:game.rtngameBoard(),draw:game.getDraw(),winner:check};
+             ws.send(JSON.stringify(output));
+          })
+
           //game.addMove(input.pos,input.value,input.user);
         //Return update
-         ws.send(5);
       });
     });
 
@@ -192,7 +212,19 @@
         //Update DB
           var game = new classes.game();
           game.setID(input.id);
-          game.getGame();
+          var dbGame = schemas.Game;
+           dbGame.findOne({_id:game.getID()},function(err,obj) {
+            if(err)console.error(err);
+            game.setID(obj._id);
+            game.setUserOne(obj.userOne);
+            game.setUserTwo(obj.userTwo);
+            game.setGameBoard(obj.gameBoard);
+            game.setMoves(obj.moves);
+            game.setDraw(obj.draw);
+            var check = game.checkWin();
+            var output = {board:game.rtngameBoard(),draw:game.getDraw(),winner:check};
+             ws.send(JSON.stringify(output));
+          })
           /**game.setID(test._id);
           game.setUserOne(test.userOne);
           game.setUserTwo(test.userTwo);
@@ -200,8 +232,7 @@
           game.setMoves(test.moves);
           game.setDraw(test.draw);**/
         //Return update
-        var output = {board:game.getUserOne()};
-         ws.send(JSON.stringify(output));
+
       });
     });
 

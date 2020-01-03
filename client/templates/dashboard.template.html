@@ -5,9 +5,8 @@
         <div class="card" >
           <img src="" class="card-img-top" alt="...">
           <div class="card-body">
-            <h5 class="card-title">Info</h5>
+            <h5 class="card-title">Statistics</h5>
             <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-            <a href="/game.html" class="btn btn-primary">Go somewhere</a>
           </div>
         </div>
       </div>
@@ -15,7 +14,7 @@
         <div class="card" >
           <img src="" class="card-img-top" alt="...">
           <div class="card-body">
-            <h5 class="card-title">Games</h5>
+            <h5 class="card-title">Game Info</h5>
             <p class="card-text" ></p>
             <a href="#" class="btn btn-primary">Go somewhere</a>
           </div>
@@ -25,7 +24,7 @@
         <div class="card" >
           <img src="" class="card-img-top" alt="...">
           <div class="card-body">
-            <h5 class="card-title">Card title</h5>
+            <h5 class="card-title">I'll think of something?</h5>
             <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
             <a href="/dashboard" ng-click="signout()" class="btn btn-primary">Sign Out!</a>
           </div>
@@ -33,9 +32,25 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-12" ng-repeat="x in PGames">
-        <p class="card-text" >{{x.game.userOne}} : {{x.game.userTwo}}</p>
+      <div class="col-4" >
+        <h1>User One:</h1>
       </div>
-
+      <div class="col-4" >
+        <h1>User Two:</h1>
+      </div>
+      <div class="col-4" >
+        <h1>Play:</h1>
+      </div>
+    </div>
+    <div class="row p-1" ng-repeat="x in PGames">
+        <div class="col-4" >
+          <p>{{x.game.userOne}}</p>
+        </div>
+        <div class="col-4" >
+          <p>{{x.game.userTwo}}</p>
+        </div>
+        <div class="col-4" >
+          <button type="button" class="btn btn-primary btn-lg btn-block" name="button" ng-click="play(x.game._id)">Play this game!</button>
+        </div>
     </div>
   </div>

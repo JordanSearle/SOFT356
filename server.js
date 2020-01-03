@@ -136,17 +136,13 @@
       //Creating a new game...
     app.get('/dashboard/newGame/:user1/:user2', function(req,res) {
 
-      if (true) {
+      if (req.session.user && req.cookies.user_sid) {
         var newGame = new classes.game();
         newGame.setUserOne(req.params.user1);
         newGame.setUserTwo(req.params.user2);
-
-
         newGame.saveNewGame().then(function(game) {
           res.sendFile(__dirname + '/client/game.html');
         });
-        //Needs do declaire a new game
-        //Then do what ever next
       } else {
 
         res.sendFile(__dirname + '/client/index.html');
@@ -154,10 +150,8 @@
 
     });
 
-    app.get('/dashboard/temp',function(req,res) {
-
+    app.get('/dashboard/findGames',function(req,res) {
       var game = schemas.Game;
-
       game.find({$or:[{userOne: req.session.user},{userTwo:req.session.user}]}, function(err, games) {
         if(err) console.log(err);
         var gameMap = [];
@@ -177,7 +171,7 @@
         var input = JSON.parse(msg);
 
           var game = new classes.game();
-          game.setID(input.id);
+          game.setID(req.session.gameID);
 
           var dbGame = schemas.Game;
            dbGame.findOne({_id:game.getID()},function(err,obj) {
@@ -211,7 +205,7 @@
         var input = JSON.parse(msg)
         //Update DB
           var game = new classes.game();
-          game.setID(input.id);
+          game.setID(req.session.gameID);
           var dbGame = schemas.Game;
            dbGame.findOne({_id:game.getID()},function(err,obj) {
             if(err)console.error(err);
@@ -235,10 +229,12 @@
 
       });
     });
-
-    app.get('game/setup/:gameID',function(req,res) {
-      var gameID = req.params.gameID;
+    //Start Game 
+    app.get('/game/setup',function(req,res) {
+      var gameID = req.query.gameID;
       //init game and return
+      req.session.gameID = gameID;
+        res.sendFile(__dirname + '/client/game.html');
     })
 
     app.post('/signup', function(req, res) {

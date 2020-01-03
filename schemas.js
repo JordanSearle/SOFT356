@@ -4,7 +4,7 @@ var myId = mongoose.Schema.Types.ObjectId;
 var Mixed = Schema.Types.Mixed;
 //User DB model
 var User = mongoose.model("User",{username: String, password: String});
-var Game = mongoose.model("Game",{ _id: myId, userOne: [{ type: Schema.Types.ObjectId, ref: 'User' }], userTwo: [{ type: Schema.Types.ObjectId, ref: 'User' }], gameBoard:{
+var Game = mongoose.model("Game",{ _id: myId, userOne: String, userTwo: String, gameBoard:{
     type: [[Number]],
     default:undefined
   }, moves: {

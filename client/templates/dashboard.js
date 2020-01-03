@@ -7,11 +7,14 @@ dashModule.component("dash",{
           $http.get('/logout');
     };
     $scope.load = function() {
-      $http.get('/dashboard/temp').then(function(res) {
+      $http.get('/dashboard/findGames').then(function(res) {
         $scope.PGames = res.data;
-
       });
+    }
+    $scope.play = function(gameID) {
+      $http.get('/game/setup',{params:{gameID:gameID}}).then(function (res) {
 
+      })
     }
     $scope.load();
   }

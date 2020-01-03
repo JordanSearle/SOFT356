@@ -3,18 +3,17 @@
     <div class="row">
       <div class="col">
         <div class="card" >
-          <img src="" class="card-img-top" alt="...">
           <div class="card-body">
-            <h5 class="card-title">Statistics</h5>
+            <h5 class="card-title">Statistics:</h5>
             <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            <a href="/dashboard" ng-click="signout()" class="btn btn-primary">Sign Out!</a>
           </div>
         </div>
       </div>
       <div class="col">
         <div class="card" >
-          <img src="" class="card-img-top" alt="...">
           <div class="card-body">
-            <h5 class="card-title">Game Info</h5>
+            <h5 class="card-title">How To Play:</h5>
             <p class="card-text" ></p>
             <a href="#" class="btn btn-primary">Go somewhere</a>
           </div>
@@ -22,11 +21,26 @@
       </div>
       <div class="col">
         <div class="card" >
-          <img src="" class="card-img-top" alt="...">
           <div class="card-body">
-            <h5 class="card-title">I'll think of something?</h5>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-            <a href="/dashboard" ng-click="signout()" class="btn btn-primary">Sign Out!</a>
+            <h5 class="card-title">Create New Game:</h5>
+            <h6 class="card-text">To create a new Game:</h6>
+            <ol class="card-text">
+              <li>Select a User to play againts </li>
+              <li> Click Start</li>
+            </ol>
+            <form>
+
+              <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <label class="input-group-text" for="uGroup">Select a User</label>
+              </div>
+               <select id="uGroup" class="form-control" ng-model="user">
+                 <option value="" Selected disabled hidden>Please Select a User</option>
+                <option ng-repeat="x in users" ng-value="x.user">{{x.user}}</option>
+              </select>
+              </div>
+              <input type="submit" class="btn btn-primary btn-lg btn-block mt-1" ng-click="newGame()" value="Start" />
+            </form>
           </div>
         </div>
       </div>

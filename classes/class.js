@@ -81,10 +81,18 @@ constructor(){
   getDraw(){
     return this.#draw;
   }
-  addMove(arr,move,user){
-    this.#gameBoard[arr[0]][arr[1]] = move;
+  addMove(arr,user){
+
     //Add move to moves array
-    this.#moves.push({user: user,move:move,pos:arr});
+    if (user == this.#userOne) {
+      this.#moves.push({user: user,move:5,pos:arr});
+      this.#gameBoard[arr[0]][arr[1]] = 5;
+    }
+    else{
+      this.#moves.push({user: user,move:3,pos:arr});
+      this.#gameBoard[arr[0]][arr[1]] = 3;
+    }
+
   }
   isValue(arr){
     if ( this.#gameBoard[arr[0]][arr[1]]==0) {
@@ -166,7 +174,8 @@ constructor(){
   //save game to Db and return
   async saveNewGame(){
     //var Game = mongoose.model("Game",{  gameID: Number, userOne: String, userTwo: String, gameBoard: [[]], moves: [{}],draw:Boolean});
-    var game = new schemas.Game({ _id: myId, userOne: this.#userOne,userTwo: this.#userTwo, gameboard:this.#gameBoard, moves:this.#moves, draw:this.#draw});
+    var game = new schemas.Game({ _id: mongoose.Types.ObjectId(), userOne: this.#userOne,userTwo: this.#userTwo, gameboard:this.#gameBoard, moves:this.#moves, draw:this.#draw});
+    console.log(game);
     await game.save((err, userDoc) => {
         if (err) console.log(err);
     });

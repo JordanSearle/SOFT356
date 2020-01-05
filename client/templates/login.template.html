@@ -1,12 +1,13 @@
 <section id="login">
-  <header>
-  </header>
   <div class="container">
-  <div class="row">
-    <div class="col-sm-12  col-md-6">
-      <div class="card " >
-        <div class="card-body">
-          <h5 class="card-title">Login!</h5>
+    <div class="row">
+      <img src="assets\logo.png" class="center" alt="logo">
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6 p-1">
+        <div class="card ">
+          <div class="card-body">
+            <h5 class="card-title text-center">Login!</h5>
             <form>
               <div class="form-group" id="userGroup">
                 <label for="Email">Username</label>
@@ -14,17 +15,17 @@
               </div>
               <div class="form-group" id="passGroup">
                 <label for="Password">Password</label>
-                <input type="password" class="form-control" ng-model="loginData.Password"required>
+                <input type="password" class="form-control" ng-model="loginData.Password" required>
               </div>
-              <button type="submit" class="btn btn-primary" ng-click="login()">Login</button>
-          </form>
+              <button type="submit" class="btn btn-primary btn-block" ng-click="login()">Login</button>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="col-sm-12 col-md-6 ">
-      <div class="card " >
-        <div class="card-body">
-          <h5 class="card-title">Create Account!</h5>
+      <div class="col-sm-12 col-md-6 p-1">
+        <div class="card ">
+          <div class="card-body">
+            <h5 class="card-title text-center">Create Account!</h5>
             <form>
               <div class="form-group">
                 <label for="Email">Username</label>
@@ -32,15 +33,13 @@
               </div>
               <div class="form-group">
                 <label for="Password">Password</label>
-                <input type="password" class="form-control" ng-model="cAccData.Password"required>
+                <input type="password" class="form-control" ng-model="cAccData.Password" required>
               </div>
-              <button type="submit" class="btn btn-primary" ng-click="signup()">Create Account</button>
-          </form>
+              <button type="submit" class="btn btn-primary btn-block" ng-click="signup()">Create Account</button>
+            </form>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
-
-
 </section>

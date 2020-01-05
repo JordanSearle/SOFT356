@@ -1,0 +1,17 @@
+body{
+  background-image: url("/assets/background.png");
+  background-repeat: repeat;
+}
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 30%;
+}
+.box{
+  background-color: white;
+}
+.card{
+  min-height: 400px;
+  overflow-y: auto;
+}

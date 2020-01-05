@@ -82,7 +82,6 @@ constructor(){
     return this.#draw;
   }
   addMove(arr,user){
-
     //Add move to moves array
     if (user == this.#userOne) {
       this.#moves.push({user: user,move:5,pos:arr});

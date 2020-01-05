@@ -92,7 +92,7 @@
         var user = schemas.User;
         var email = req.body.Email;
         var password = req.body.Password;
-
+        console.log(req.body);
         user.deleteOne({
           username: email,
           password: password
@@ -173,6 +173,7 @@
       }
     })
     app.get('/dashboard/findGames',function(req,res) {
+      if (req.session.user && req.cookies.user_sid) {
       var game = schemas.Game;
       var user = schemas.User;
       user.findOne({_id:req.session.user},function(err, obj) {
@@ -192,9 +193,14 @@
         });
       }
     })
+  }
+  else{
+    res.sendFile(__dirname + '/client/index.html');
+  }
   })
     //Game functions now...
     app.ws('/game/move', function(ws, req) {
+      if (req.session.user && req.cookies.user_sid) {
       ws.on('message', function(msg) {
         //Get Input (GameID,user, Move)
         var input = JSON.parse(msg);
@@ -233,9 +239,13 @@
           //game.addMove(input.pos,input.value,input.user);
         //Return update
       });
+    }else{
+      res.sendFile(__dirname + '/client/index.html');
+    }
     });
 
     app.ws('/game/update', function(ws, req) {
+      if (req.session.user && req.cookies.user_sid) {
       ws.on('message', function(msg) {
         //Get Input (GameID,user, Move)
         //var input = JSON.parse(msg)
@@ -257,13 +267,21 @@
           })
 
       });
+    }else{
+      res.sendFile(__dirname + '/client/index.html');
+    }
     });
     //Start Game
     app.get('/game/setup',function(req,res) {
+      if (req.session.user && req.cookies.user_sid) {
       var gameID = req.query.gameID;
       //init game and return
       req.session.gameID = gameID;
-        res.sendFile(__dirname + '/client/game.html');
+      res.sendFile(__dirname + '/client/game.html');
+    }
+      else {
+        res.sendFile(__dirname + '/client/index.html');
+      }
     })
 
     app.post('/signup', function(req, res) {

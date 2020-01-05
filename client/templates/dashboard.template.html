@@ -1,26 +1,35 @@
 
   <div class="container"id="dash">
     <div class="row">
-      <div class="col">
+      <div class="col m-3">
         <div class="card" >
           <div class="card-body">
             <h5 class="card-title">Statistics:</h5>
             <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            <hr>
+            <h5 class="card-title">Sign out of your Account</h5>
             <a href="/dashboard" ng-click="signout()" class="btn btn-primary">Sign Out!</a>
           </div>
         </div>
       </div>
       <div class="col">
-        <div class="card" >
+        <div class="card m-3">
           <div class="card-body">
             <h5 class="card-title">How To Play:</h5>
-            <p class="card-text" ></p>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
+            <ul>
+              <li> Select From the list of games below</li>
+              <li>Or You can Create a game in the "Create New Game" section</li>
+            </ul>
+            <p>Rules of the Game:</p>
+              <ol class="card-text" >
+                <li>Each player takes it in turn to place their X or O into one of the empty squares</li>
+                <li>To win the game get three of your symbols in a line horizontally, vertically or diagonally</li>
+              </ol>
           </div>
         </div>
       </div>
       <div class="col">
-        <div class="card" >
+        <div class="card m-3" >
           <div class="card-body">
             <h5 class="card-title">Create New Game:</h5>
             <h6 class="card-text">To create a new Game:</h6>

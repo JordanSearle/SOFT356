@@ -92,11 +92,16 @@ constructor(){
     //Add move to moves array
     if (user == this.#userOne) {
       this.#moves.push({user: user,move:5,pos:arr});
-      this.#gameBoard[arr[0]][arr[1]] = 5;
+      if (this.#gameBoard[arr[0]][arr[1]] == 0) {
+        this.#gameBoard[arr[0]][arr[1]] = 5;
+      }
+
     }
     else{
       this.#moves.push({user: user,move:3,pos:arr});
-      this.#gameBoard[arr[0]][arr[1]] = 3;
+      if (this.#gameBoard[arr[0]][arr[1]] == 0) {
+        this.#gameBoard[arr[0]][arr[1]] = 3;
+      }
     }
 
   }

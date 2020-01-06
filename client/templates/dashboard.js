@@ -21,6 +21,7 @@ dashModule.component("dash",{
     }
     $scope.newGame = function () {
       $http.get('/dashboard/newGame/'+$scope.user)
+      $scope.load();
     }
     $scope.load();
   }

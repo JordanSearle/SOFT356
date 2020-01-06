@@ -70,7 +70,7 @@ gameModule.component("game", {
             case 3:
               //SetPos
               //Draw O
-              context.font = "110px Arial";
+              context.font = "110px Consolas";
               context.fillText("0", (j - 100) + 15, i - p);
               break;
             default:

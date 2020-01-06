@@ -131,8 +131,9 @@ constructor(){
     }
     //Second: Check for a win
     //If A player has won then return player that won
-    for (var i = 0; i < 2; i++) {
+    for (var i = 0; i < 3; i++) {
       var b = 0;
+      //Row
       b = this.#gameBoard[i][0]+this.#gameBoard[i][1]+this.#gameBoard[i][2];
       if (b == 15) {
         this.#winner = this.#userOne;
@@ -143,8 +144,9 @@ constructor(){
         return {winner:this.#userTwo};
       }
     }
-    for (var i = 0; i < 2; i++) {
+    for (var i = 0; i < 3; i++) {
       var b = 0;
+      //column
       b = this.#gameBoard[0][i]+this.#gameBoard[1][i]+this.#gameBoard[2][i];
       if (b == 15) {
         this.#winner = this.#userOne;

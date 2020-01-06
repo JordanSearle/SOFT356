@@ -35,7 +35,8 @@
             <h6 class="card-text">To create a new Game:</h6>
             <ol class="card-text">
               <li>Select a User to play againts </li>
-              <li> Click Start</li>
+              <li>Create</li>
+              <li>Select from the list blow to play!</li>
             </ol>
             <form>
 
@@ -48,7 +49,7 @@
                 <option ng-repeat="x in users" ng-value="x.user">{{x.user}}</option>
               </select>
               </div>
-              <input type="submit" class="btn btn-primary btn-lg btn-block mt-1" ng-click="newGame()" value="Start" />
+              <input type="submit" class="btn btn-primary btn-lg btn-block mt-1" ng-click="newGame()" value="Create" />
             </form>
           </div>
         </div>

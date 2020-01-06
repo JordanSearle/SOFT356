@@ -20,11 +20,11 @@ gameModule.component("game", {
           if (data.check.hasOwnProperty("winner")) {
             $scope.winner = data.check.winner;
             $scope.$apply();
-            console.log(data.check.winner);
+
             canvas.removeEventListener('mousedown', click);
-          } else if (data.check.hasOwnProperty("draw")) {
+          } else if (data.check.hasOwnProperty("Gdraw")) {
             drawBoard(event.data);
-            $scope.draw = data.check.draw;
+            $scope.draw = data.check.Gdraw;
             $scope.$apply();
             canvas.removeEventListener('mousedown', click);
           }
@@ -110,17 +110,16 @@ gameModule.component("game", {
         loadArr();
         //Update Baord on message recieve
         ws.onmessage = function(event) {
-          console.log(event.data);
           var output = JSON.parse(event.data);
           if (output.draw == true) {
-            canvas.removeEventListener('mousedown', click(e));
+            canvas.removeEventListener('mousedown', click);
           }
         }
       };
     }
     setInterval(function() {
       loadArr();
-    }, 5000);
+    }, 1000);
     $scope.load();
   }
 })

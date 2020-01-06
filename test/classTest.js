@@ -96,6 +96,20 @@ describe('Testing a full Game',function() {
 
     expect(game.checkWin().winner).to.equal('user2');
   });
+  it('Testing diagonal',function() {
+    var a = [
+      [0,0,0],
+      [0,0,0],
+      [0,0,0]
+    ];
+    game.setUserOne('user1');
+    game.setUserTwo('user2');
+    game.setGameBoard(a);
+    game.addMove([0,0],'user1');
+    game.addMove([1,0],'user1');
+    game.addMove([2,0],'user1');
+    expect(game.checkWin().winner).to.equal('user1');
+  });
   it('Testing if game has not ended',function() {
     game = new classes.game();
     var a = [

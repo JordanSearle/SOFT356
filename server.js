@@ -92,7 +92,6 @@
         var user = schemas.User;
         var email = req.body.Email;
         var password = req.body.Password;
-        console.log(req.body);
         user.deleteOne({
           username: email,
           password: password
@@ -263,7 +262,6 @@
             game.setMoves(obj.moves);
             game.setDraw(obj.draw);
             var check = game.checkWin();
-            console.log(check);
             var output = {board:game.rtngameBoard(),draw:game.getDraw(),check};
              ws.send(JSON.stringify(output));
           })

@@ -8,9 +8,6 @@
     var session = require('express-session');
     var expressWs = require('express-ws')(app);
 
-
-
-
     uri = 'mongodb://localhost:27017/soft355';
 
     app.use(bodyParser.json());

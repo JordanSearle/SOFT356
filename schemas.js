@@ -10,6 +10,6 @@ var Game = mongoose.model("Game",{ _id: myId, userOne: String, userTwo: String, 
   }, moves: {
       type: [{}],
       default: undefined
-    },draw:Boolean});
+    },draw:Boolean,winner:String});
 module.exports.User = User;
 module.exports.Game = Game;

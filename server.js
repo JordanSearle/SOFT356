@@ -228,6 +228,7 @@
             obj.moves = game.getMoves();
             obj.gameBoard = game.rtngameBoard();
             obj.draw = game.getDraw();
+            obj.winner = game.getWinner();
             obj.markModified('gameBoard');
             obj.markModified('moves');
             obj.save();
@@ -262,6 +263,7 @@
             game.setMoves(obj.moves);
             game.setDraw(obj.draw);
             var check = game.checkWin();
+            console.log(check);
             var output = {board:game.rtngameBoard(),draw:game.getDraw(),check};
              ws.send(JSON.stringify(output));
           })

@@ -3,6 +3,9 @@ var loginModule = angular.module("login",["ngRoute"]);
 loginModule.component("login",{
   templateUrl:"templates/login.template.html",
   controller: function loginController($scope,$http) {
+    $(".collapsible").click(function() {
+      $(".content").toggle();
+    })
     $scope.login = function() {
         $http.post('http://localhost:9000/Ulogin',$scope.loginData).
          then(function(response) {

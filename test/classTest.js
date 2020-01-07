@@ -46,7 +46,15 @@ describe('game class testing',function() {
 
   context("Testing board addMove function", function(){
     it('position 0,1 should now equal 5', function() {
-      game.addMove([0,1],5,'User1');
+      var a = [
+        [0,0,0],
+        [0,0,0],
+        [0,0,0]
+      ];
+      game.setGameBoard(a);
+      game.setUserOne('user1');
+      game.setUserTwo('user2');
+      game.addMove([0,1],'user1');
       expect(game.getGameBoard(0,1)).to.equal(5)
     })
   })
@@ -60,22 +68,47 @@ describe('game class testing',function() {
 })
 describe('Testing a full Game',function() {
   it('Testing if User 1 will win',function() {
+    var a = [
+      [0,0,0],
+      [0,0,0],
+      [0,0,0]
+    ];
     game.setUserOne('user1');
     game.setUserTwo('user2');
-    game.addMove([0,0],5,'User1');
-    game.addMove([0,1],5,'User1');
-    game.addMove([0,2],5,'User1');
-
+    game.setGameBoard(a);
+    game.addMove([0,0],'user1');
+    game.addMove([0,1],'user1');
+    game.addMove([0,2],'user1');
     expect(game.checkWin().winner).to.equal('user1');
   });
   it('Testing if User 2 will win',function() {
+    var a = [
+      [0,0,0],
+      [0,0,0],
+      [0,0,0]
+    ];
     game.setUserOne('user1');
     game.setUserTwo('user2');
-    game.addMove([0,0],3,'User2');
-    game.addMove([0,1],3,'User2');
-    game.addMove([0,2],3,'User2');
+    game.setGameBoard(a);
+    game.addMove([0,0],'user2');
+    game.addMove([0,1],'user2');
+    game.addMove([0,2],'user2');
 
     expect(game.checkWin().winner).to.equal('user2');
+  });
+  it('Testing diagonal',function() {
+    var a = [
+      [0,0,0],
+      [0,0,0],
+      [0,0,0]
+    ];
+    game.setUserOne('user1');
+    game.setUserTwo('user2');
+    game.setGameBoard(a);
+    game.addMove([0,0],'user1');
+    game.addMove([1,0],'user1');
+    game.addMove([2,0],'user1');
+    expect(game.checkWin().winner).to.equal('user1');
   });
   it('Testing if game has not ended',function() {
     game = new classes.game();

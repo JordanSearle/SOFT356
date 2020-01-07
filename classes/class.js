@@ -41,6 +41,7 @@ constructor(){
   #gameBoard;
   #moves = [];
   #draw;
+  #winner;
 //getters/setters etc...
   setID(id){
     this.#gameID = id;
@@ -81,10 +82,28 @@ constructor(){
   getDraw(){
     return this.#draw;
   }
-  addMove(arr,move,user){
-    this.#gameBoard[arr[0]][arr[1]] = move;
+  getWinner(){
+    return this.#winner;
+  }
+  setWinnter(winner){
+    this.#winner = winner;
+  }
+  addMove(arr,user){
     //Add move to moves array
-    this.#moves.push({user: user,move:move,pos:arr});
+    if (user == this.#userOne) {
+      this.#moves.push({user: user,move:5,pos:arr});
+      if (this.#gameBoard[arr[0]][arr[1]] == 0) {
+        this.#gameBoard[arr[0]][arr[1]] = 5;
+      }
+
+    }
+    else{
+      this.#moves.push({user: user,move:3,pos:arr});
+      if (this.#gameBoard[arr[0]][arr[1]] == 0) {
+        this.#gameBoard[arr[0]][arr[1]] = 3;
+      }
+    }
+
   }
   isValue(arr){
     if ( this.#gameBoard[arr[0]][arr[1]]==0) {
@@ -117,23 +136,29 @@ constructor(){
     }
     //Second: Check for a win
     //If A player has won then return player that won
-    for (var i = 0; i < 2; i++) {
+    for (var i = 0; i < 3; i++) {
       var b = 0;
+      //Row
       b = this.#gameBoard[i][0]+this.#gameBoard[i][1]+this.#gameBoard[i][2];
       if (b == 15) {
+        this.#winner = this.#userOne;
         return {winner:this.#userOne};
       }
       else if (b == 9) {
+        this.#winner = this.#userTwo;
         return {winner:this.#userTwo};
       }
     }
-    for (var i = 0; i < 2; i++) {
+    for (var i = 0; i < 3; i++) {
       var b = 0;
+      //column
       b = this.#gameBoard[0][i]+this.#gameBoard[1][i]+this.#gameBoard[2][i];
       if (b == 15) {
+        this.#winner = this.#userOne;
         return {winner:this.#userOne};
       }
       else if (b == 9) {
+        this.#winner = this.#userTwo;
         return {winner:this.#userTwo};
       }
     }
@@ -142,15 +167,19 @@ constructor(){
     b = this.#gameBoard[0][0]+this.#gameBoard[1][1]+this.#gameBoard[2][2];
     c = this.#gameBoard[0][2]+this.#gameBoard[1][1]+this.#gameBoard[2][0];
     if (b == 15) {
+      this.#winner = this.#userOne;
       return {winner:this.#userOne};
     }
     else if (b == 9) {
+      this.#winner = this.#userTwo;
       return {winner:this.#userTwo};
     }
     else if (c == 15) {
+      this.#winner = this.#userOne;
       return {winner:this.#userOne};
     }
     else if (c == 9) {
+      this.#winner = this.#userTwo;
       return {winner:this.#userTwo};
     }
 
@@ -166,7 +195,8 @@ constructor(){
   //save game to Db and return
   async saveNewGame(){
     //var Game = mongoose.model("Game",{  gameID: Number, userOne: String, userTwo: String, gameBoard: [[]], moves: [{}],draw:Boolean});
-    var game = new schemas.Game({ _id: myId, userOne: this.#userOne,userTwo: this.#userTwo, gameboard:this.#gameBoard, moves:this.#moves, draw:this.#draw});
+    var game = new schemas.Game({ _id: mongoose.Types.ObjectId(), userOne: this.#userOne,userTwo: this.#userTwo, gameboard:this.#gameBoard, moves:this.#moves, draw:this.#draw, winner:this.#winner});
+    console.log(game);
     await game.save((err, userDoc) => {
         if (err) console.log(err);
     });

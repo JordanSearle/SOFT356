@@ -8,9 +8,6 @@
     var session = require('express-session');
     var expressWs = require('express-ws')(app);
 
-
-
-
     uri = 'mongodb://localhost:27017/soft355';
 
     app.use(bodyParser.json());
@@ -28,7 +25,7 @@
       resave: false,
       saveUninitialized: false,
       cookie: {
-        expires: 600000
+        expires: new Date(Date.now() + 3600000)
       }
     }));
 
@@ -92,7 +89,6 @@
         var user = schemas.User;
         var email = req.body.Email;
         var password = req.body.Password;
-
         user.deleteOne({
           username: email,
           password: password
@@ -133,52 +129,87 @@
       }
 
     });
+
       //Creating a new game...
-    app.get('/dashboard/newGame/:user1/:user2', function(req,res) {
-
-      if (true) {
+    app.get('/dashboard/newGame/:user1', function(req,res) {
+      if (req.session.user && req.cookies.user_sid) {
         var newGame = new classes.game();
-        newGame.setUserOne(req.params.user1);
-        newGame.setUserTwo(req.params.user2);
-
-
-        newGame.saveNewGame().then(function(game) {
-          res.sendFile(__dirname + '/client/game.html');
-        });
-        //Needs do declaire a new game
-        //Then do what ever next
+        var user = schemas.User;
+        user.findOne({_id:req.session.user},function(err, obj) {
+          if (err) {
+            console.log(err);
+            res.status(404).send(err);
+          }
+          else{
+            newGame.setUserOne(obj.username);
+            newGame.setUserTwo(req.params.user1);
+            newGame.saveNewGame().then(function(game) {
+              res.sendFile(__dirname + '/client/game.html');
+            });
+          }})
       } else {
-
         res.sendFile(__dirname + '/client/index.html');
       }
 
     });
-
-    app.get('/dashboard/temp',function(req,res) {
-
-      var game = schemas.Game;
-
-      game.find({$or:[{userOne: req.session.user},{userTwo:req.session.user}]}, function(err, games) {
-        if(err) console.log(err);
-        var gameMap = [];
-
-        games.forEach(function(lgame) {
-          gameMap.push({'game':lgame});
+    app.get('/dashboard/users',function(req,res) {
+      if (req.session.user && req.cookies.user_sid) {
+        var user = schemas.User;
+        user.find({_id:{$ne:req.session.user}}, function(err, users) {
+          var userMap = [];
+          users.forEach(function(user) {
+            userMap.push({'user':user.username});
+          });
+          res.send(userMap);
         });
 
-      res.send(gameMap);
-    });
+      } else {
 
+        res.sendFile(__dirname + '/client/index.html');
+      }
     })
+    app.get('/dashboard/findGames',function(req,res) {
+      if (req.session.user && req.cookies.user_sid) {
+      var game = schemas.Game;
+      var user = schemas.User;
+      user.findOne({_id:req.session.user},function(err, obj) {
+        if (err) {
+          console.log(err);
+          res.status(404).send(err);
+        }
+        else{
+          game.find({$or:[{userOne: obj.username},{userTwo:obj.username}]}, function(err, games) {
+            if(err) console.log(err);
+            var gameMap = [];
+            games.forEach(function(lgame) {
+              gameMap.push({'game':lgame});
+            });
+
+          res.send(gameMap);
+        });
+      }
+    })
+  }
+  else{
+    res.sendFile(__dirname + '/client/index.html');
+  }
+  })
     //Game functions now...
     app.ws('/game/move', function(ws, req) {
+      if (req.session.user && req.cookies.user_sid) {
       ws.on('message', function(msg) {
         //Get Input (GameID,user, Move)
         var input = JSON.parse(msg);
 
           var game = new classes.game();
-          game.setID(input.id);
-
+          var user = schemas.User;
+          game.setID(req.session.gameID);
+          user.findOne({_id:req.session.user},function(err, user) {
+            if (err) {
+              console.log(err);
+              res.status(404).send(err);
+            }
+            else{
           var dbGame = schemas.Game;
            dbGame.findOne({_id:game.getID()},function(err,obj) {
             if(err)console.error(err);
@@ -188,30 +219,36 @@
             game.setMoves(obj.moves);
             game.setGameBoard(obj.gameBoard);
             game.setDraw(obj.draw);
-            game.addMove(input.pos,input.value,input.user);
+            game.addMove(input.pos,user.username);
             var check = game.checkWin();
             obj.moves = game.getMoves();
             obj.gameBoard = game.rtngameBoard();
             obj.draw = game.getDraw();
+            obj.winner = game.getWinner();
             obj.markModified('gameBoard');
             obj.markModified('moves');
             obj.save();
-            var output = {board:game.rtngameBoard(),draw:game.getDraw(),winner:check};
+            var output = {board:game.rtngameBoard(),draw:game.getDraw(),check};
              ws.send(JSON.stringify(output));
           })
-
+        }
+      })
           //game.addMove(input.pos,input.value,input.user);
         //Return update
       });
+    }else{
+      res.sendFile(__dirname + '/client/index.html');
+    }
     });
 
     app.ws('/game/update', function(ws, req) {
+      if (req.session.user && req.cookies.user_sid) {
       ws.on('message', function(msg) {
         //Get Input (GameID,user, Move)
-        var input = JSON.parse(msg)
+        //var input = JSON.parse(msg)
         //Update DB
           var game = new classes.game();
-          game.setID(input.id);
+          game.setID(req.session.gameID);
           var dbGame = schemas.Game;
            dbGame.findOne({_id:game.getID()},function(err,obj) {
             if(err)console.error(err);
@@ -222,23 +259,26 @@
             game.setMoves(obj.moves);
             game.setDraw(obj.draw);
             var check = game.checkWin();
-            var output = {board:game.rtngameBoard(),draw:game.getDraw(),winner:check};
+            var output = {board:game.rtngameBoard(),draw:game.getDraw(),check};
              ws.send(JSON.stringify(output));
           })
-          /**game.setID(test._id);
-          game.setUserOne(test.userOne);
-          game.setUserTwo(test.userTwo);
-          game.setGameBoard(test.gameBoard);
-          game.setMoves(test.moves);
-          game.setDraw(test.draw);**/
-        //Return update
 
       });
+    }else{
+      res.sendFile(__dirname + '/client/index.html');
+    }
     });
-
-    app.get('game/setup/:gameID',function(req,res) {
-      var gameID = req.params.gameID;
+    //Start Game
+    app.get('/game/setup',function(req,res) {
+      if (req.session.user && req.cookies.user_sid) {
+      var gameID = req.query.gameID;
       //init game and return
+      req.session.gameID = gameID;
+      res.sendFile(__dirname + '/client/game.html');
+    }
+      else {
+        res.sendFile(__dirname + '/client/index.html');
+      }
     })
 
     app.post('/signup', function(req, res) {

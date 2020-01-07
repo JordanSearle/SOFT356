@@ -6,10 +6,10 @@ var Mixed = Schema.Types.Mixed;
 var User = mongoose.model("User",{username: String, password: String});
 var Game = mongoose.model("Game",{ _id: myId, userOne: String, userTwo: String, gameBoard:{
     type: [[Number]],
-    default:undefined
+    default:[[0,0,0],[0,0,0],[0,0,0]]
   }, moves: {
       type: [{}],
       default: undefined
-    },draw:Boolean});
+    },draw:Boolean,winner:String});
 module.exports.User = User;
 module.exports.Game = Game;

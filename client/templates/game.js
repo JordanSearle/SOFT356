@@ -82,9 +82,6 @@ gameModule.component("game", {
     }
 
 
-          }
-        }
-    }
     function getCursorPosition(canvas, event) {
       const rect = canvas.getBoundingClientRect();
       const x = event.clientX - rect.left;
